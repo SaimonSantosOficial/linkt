@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Link.ly - Perfil</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="profile-container">
+        <div class="cover-photo" id="coverPhoto"></div>
+        <div class="profile-header">
+            <img id="profilePic" class="profile-pic" src="https://cdn-icons-png.flaticon.com/128/149/149071.png" alt="Foto de Perfil">
+            <div class="name-container">
+                <h1 id="profileName">Link.ly User</h1>
+                <img id="verifiedBadge" class="verified-badge" src="https://cdn-icons-png.flaticon.com/128/5253/5253968.png" alt="Verificado" style="display: none;">
+            </div>
+            <p class="bio" id="profileBio"></p>
+            <p class="categories" id="profileCategories"></p>
+            <p class="views" id="profileViews">Visualizações: 0</p>
+        </div>
+        <div class="profile-links" id="profileLinkList">
+            <!-- Links serão adicionados via JS -->
+        </div>
+    </div>
+    <a href="index.html" class="watermark">Link.ly</a>
+</body>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+<script src="profile.js"></script>
+</body>
+</html>

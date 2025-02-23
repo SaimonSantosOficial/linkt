@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Link.ly - Meus Links</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Link.ly</h1>
+            <p>Seu caminho poderoso</p>
+            <button onclick="location.href='plans.html'" class="upgrade-btn">Fazer Upgrade</button>
+            <button onclick="logout()" class="logout-btn">Sair</button>
+        </header>
+        <div class="customize">
+            <h3>Perfil</h3>
+            <div class="field">
+                <label for="username">Nome de Usuário:</label>
+                <input type="text" id="username" placeholder="Digite seu nome de usuário">
+            </div>
+            <div class="field">
+                <label for="bio">Bio:</label>
+                <textarea id="bio" placeholder="Escreva sua bio" rows="3"></textarea>
+            </div>
+            <div class="field">
+                <label for="profilePicUrl">Foto de Perfil (URL):</label>
+                <input type="url" id="profilePicUrl" placeholder="URL da sua foto de perfil">
+            </div>
+            <div class="field">
+                <label for="coverPicUrl">Capa (URL):</label>
+                <input type="url" id="coverPicUrl" placeholder="URL da sua capa">
+            </div>
+            <div class="field">
+                <label for="theme">Tema do Perfil (Premium):</label>
+                <select id="theme" disabled>
+                    <option value="default">Padrão (Azul Escuro)</option>
+                    <option value="midnight">Meia-Noite (Preto)</option>
+                    <option value="sunset">Pôr do Sol (Laranja)</option>
+                    <option value="forest">Floresta (Verde)</option>
+                    <option value="ocean">Oceano (Azul Claro)</option>
+                </select>
+            </div>
+            <button onclick="saveProfile()">Salvar Perfil</button>
+            <h3>Categorias (máx. 3)</h3>
+            <div class="field">
+                <label for="categories">Selecione suas categorias:</label>
+                <select id="categories" multiple>
+                    <option value="Influenciador">Influenciador</option>
+                    <option value="Marketing">Marketing</option>
+                    <option value="Gamer">Gamer</option>
+                    <option value="Streamer">Streamer</option>
+                    <option value="Artista">Artista</option>
+                    <option value="Empreendedor">Empreendedor</option>
+                    <option value="Fotógrafo">Fotógrafo</option>
+                    <option value="Músico">Músico</option>
+                    <option value="Escritor">Escritor</option>
+                    <option value="Tecnologia">Tecnologia</option>
+                </select>
+            </div>
+            <h3>Seu Link de Perfil</h3>
+            <div class="share-link-container">
+                <label for="shareLink">Link para compartilhar:</label>
+                <input type="text" id="shareLink" readonly placeholder="Seu link aparecerá aqui">
+                <img src="https://cdn-icons-png.flaticon.com/128/12221/12221140.png" alt="Copiar" class="copy-icon" onclick="copyShareLink()">
+            </div>
+            <h3>Links <span id="linkCount">(0/5)</span></h3>
+            <div class="field">
+                <label for="linkTitle">Título do Link:</label>
+                <input type="text" id="linkTitle" placeholder="Digite o título do link">
+            </div>
+            <div class="field">
+                <label for="linkUrl">URL do Link:</label>
+                <input type="url" id="linkUrl" placeholder="Digite a URL do link">
+            </div>
+            <div class="field">
+                <label for="linkImage">Imagem do Link (URL):</label>
+                <input type="url" id="linkImage" placeholder="URL da imagem do link">
+                <p class="image-tip">Pegue ícones em <a href="https://www.flaticon.com/" target="_blank">Flaticon</a>!</p>
+            </div>
+            <button onclick="addOrUpdateLink()" id="addLinkBtn">Adicionar/Atualizar</button>
+        </div>
+        <div class="links" id="linkList">
+            <!-- Links serão adicionados via JS -->
+        </div>
+        <div class="account-actions">
+            <button onclick="confirmDeleteAccount()" class="delete-account-btn">Deletar Conta</button>
+        </div>
+        <footer>
+            <p>Desenvolvido por Saimon Santos</p>
+        </footer>
+    </div>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

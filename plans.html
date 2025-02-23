@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Link.ly - Planos</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="plans-container">
+        <header>
+            <h1>Escolha Seu Plano</h1>
+            <p>Desbloqueie todo o poder do Link.ly</p>
+            <button onclick="location.href='links.html'" class="back-btn">Voltar</button>
+        </header>
+        <div class="plans">
+            <div class="plan-card free">
+                <h2>Gratuito</h2>
+                <p class="price">R$ 0,00<span>/mês</span></p>
+                <ul class="benefits">
+                    <li>Até 5 links</li>
+                    <li>Personalização básica</li>
+                    <li>Estatísticas limitadas</li>
+                    <li>Suporte padrão</li>
+                </ul>
+                <button class="choose-plan">Escolher Plano</button>
+            </div>
+            <div class="plan-card">
+                <h2>Mensal</h2>
+                <p class="price">R$ 19,90<span>/mês</span></p>
+                <ul class="benefits">
+                    <li>Links ilimitados</li>
+                    <li>Personalização completa</li>
+                    <li>Estatísticas básicas</li>
+                    <li>Suporte prioritário</li>
+                    <li>Sem marca d'água</li>
+                </ul>
+                <button class="choose-plan">Escolher Plano</button>
+            </div>
+            <div class="plan-card annual">
+                <h2>Anual</h2>
+                <p class="promo">Economize 20%!</p>
+                <p class="price">R$ 190,00<span>/ano</span></p>
+                <ul class="benefits">
+                    <li>Todos os benefícios do plano Mensal</li>
+                    <li>Estatísticas avançadas</li>
+                    <li>Temas exclusivos</li>
+                    <li>Badge Premium no perfil</li>
+                </ul>
+                <button class="choose-plan">Escolher Plano</button>
+            </div>
+        </div>
+        <footer>
+            <p>Desenvolvido por Saimon Santos</p>
+        </footer>
+    </div>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <script src="firebase.js"></script>
+    <script src="plans.js"></script>
+</body>
+</html>

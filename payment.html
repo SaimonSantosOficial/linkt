@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Link.ly - Pagamento</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="payment-container">
+        <header>
+            <h1>Pagamento</h1>
+            <p>Efetue o pagamento personalizado</p>
+        </header>
+        <div class="payment-details">
+            <h2 id="planName"></h2>
+            <p id="planPrice"></p>
+            <p class="no-fee">Sem taxa adicional!</p>
+            <form id="payment-form">
+                <div class="field">
+                    <label for="cardNumber">Número do Cartão</label>
+                    <input id="cardNumber" name="cardNumber" type="text" placeholder="1234 5678 9012 3456">
+                </div>
+                <div class="field">
+                    <label for="cardExpiry">Validade</label>
+                    <input id="cardExpiry" name="cardExpiry" type="text" placeholder="MM / AA">
+                </div>
+                <div class="field">
+                    <label for="cardCvc">CVC</label>
+                    <input id="cardCvc" name="cardCvc" type="text" placeholder="123">
+                </div>
+                <button type="submit" id="submit-card-btn">Pagar com Cartão</button>
+            </form>
+            <button id="pix-btn">Pagar com Pix</button>
+            <div id="pix-qr-code" style="display: none;">
+                <img id="qrCodeImage" alt="QR Code Pix">
+                <p>Escaneie o QR Code acima com o app do Mercado Pago ou outro app Pix.</p>
+                <button id="confirm-pix-btn">Confirmar Pagamento Pix</button>
+            </div>
+            <div id="payment-errors" role="alert"></div>
+        </div>
+        <button onclick="location.href='plans.html'" class="back-btn">Voltar</button>
+        <footer>
+            <p>Desenvolvido por Saimon Santos</p>
+        </footer>
+    </div>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <script src="https://secure.mlstatic.com/sdk/javascript/v1/mercadopago.js"></script>
+    <script src="firebase.js"></script>
+    <script src="payment.js"></script>
+</body>
+</html>

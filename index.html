@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Link.ly - Login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h1>Link.ly</h1>
+            <p>Bem-vindo ao seu caminho poderoso</p>
+        </div>
+        <div class="auth-container">
+            <div class="form" id="loginForm">
+                <h2>Login</h2>
+                <input type="email" id="loginEmail" placeholder="Email" required>
+                <input type="password" id="loginPassword" placeholder="Senha" required>
+                <button onclick="login()">Entrar</button>
+                <p class="toggle-text">Não tem conta? <a href="#" onclick="toggleForm()">Cadastre-se</a></p>
+            </div>
+            <div class="form" id="registerForm" style="display: none;">
+                <h2>Cadastro</h2>
+                <input type="email" id="registerEmail" placeholder="Email" required>
+                <input type="password" id="registerPassword" placeholder="Senha" required>
+                <button onclick="register()">Cadastrar</button>
+                <p class="toggle-text">Já tem conta? <a href="#" onclick="toggleForm()">Faça login</a></p>
+            </div>
+        </div>
+        <footer>
+            <p>Desenvolvido por Saimon Santos</p>
+        </footer>
+    </div>
+    <!-- Carregar Firebase antes do auth.js -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <script src="auth.js"></script>
+</body>
+</html>
