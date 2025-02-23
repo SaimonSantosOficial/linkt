@@ -10,32 +10,29 @@
     <div class="payment-container">
         <header>
             <h1>Pagamento</h1>
-            <p>Efetue o pagamento personalizado</p>
+            <p>Finalize sua compra com Pix</p>
         </header>
         <div class="payment-details">
-            <h2 id="planName"></h2>
-            <p id="planPrice"></p>
-            <p class="no-fee">Sem taxa adicional!</p>
-            <form id="payment-form">
-                <div class="field">
-                    <label for="cardNumber">Número do Cartão</label>
-                    <input id="cardNumber" name="cardNumber" type="text" placeholder="1234 5678 9012 3456">
+            <div class="plan-info">
+                <h2 id="planName"></h2>
+                <p id="planPrice"></p>
+                <p class="no-fee">Sem taxa adicional!</p>
+            </div>
+            <div class="payment-methods">
+                <div class="payment-option pix-option">
+                    <h3>Pagar com Pix</h3>
+                    <button id="pix-btn">Gerar Pix</button>
+                    <div id="pix-qr-code" style="display: none;">
+                        <img id="qrCodeImage" alt="QR Code Pix">
+                        <div class="field">
+                            <label for="pixCode">Copia e Cola</label>
+                            <input id="pixCode" type="text" readonly>
+                            <button id="copy-pix-btn">Copiar</button>
+                        </div>
+                        <p>Tempo restante: <span id="pix-timer"></span></p>
+                        <p id="payment-status" style="color: #ffd700;"></p>
+                    </div>
                 </div>
-                <div class="field">
-                    <label for="cardExpiry">Validade</label>
-                    <input id="cardExpiry" name="cardExpiry" type="text" placeholder="MM / AA">
-                </div>
-                <div class="field">
-                    <label for="cardCvc">CVC</label>
-                    <input id="cardCvc" name="cardCvc" type="text" placeholder="123">
-                </div>
-                <button type="submit" id="submit-card-btn">Pagar com Cartão</button>
-            </form>
-            <button id="pix-btn">Pagar com Pix</button>
-            <div id="pix-qr-code" style="display: none;">
-                <img id="qrCodeImage" alt="QR Code Pix">
-                <p>Escaneie o QR Code acima com o app do Mercado Pago ou outro app Pix.</p>
-                <button id="confirm-pix-btn">Confirmar Pagamento Pix</button>
             </div>
             <div id="payment-errors" role="alert"></div>
         </div>
@@ -47,7 +44,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
-    <script src="https://secure.mlstatic.com/sdk/javascript/v1/mercadopago.js"></script>
     <script src="firebase.js"></script>
     <script src="payment.js"></script>
 </body>

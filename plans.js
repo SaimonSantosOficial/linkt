@@ -39,7 +39,7 @@ auth.onAuthStateChanged((user) => {
                     }
                 });
             } else {
-                const price = plan === 'mensal' ? '19.90' : '190.00';
+                const price = plan === 'mensal' ? '0.02' : '0.03';
                 window.location.href = `payment.html?plan=${plan}&price=${price}&uid=${user.uid}`;
             }
         });

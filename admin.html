@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Link.ly - Administração</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="admin-container">
+        <aside class="sidebar">
+            <h2>Link.ly Admin</h2>
+            <nav>
+                <button id="dashboard-btn" class="nav-btn active">Dashboard</button>
+                <button id="users-btn" class="nav-btn">Usuários</button>
+                <button id="links-btn" class="nav-btn">Links</button>
+                <button id="stats-btn" class="nav-btn">Estatísticas</button>
+                <button onclick="logout()" class="logout-btn">Sair</button>
+            </nav>
+        </aside>
+        <main class="content">
+            <header>
+                <h1>Painel de Administração</h1>
+                <p>Gerencie todos os aspectos do Link.ly</p>
+            </header>
+            <section id="dashboard" class="panel active">
+                <h2>Dashboard</h2>
+                <div class="dashboard-stats">
+                    <div class="stat-card">
+                        <h3>Usuários Totais</h3>
+                        <p id="total-users">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Planos Ativos</h3>
+                        <p id="active-plans">Gratuito: 0 | Mensal: 0 | Anual: 0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Receita Estimada</h3>
+                        <p id="revenue">R$ 0,00</p>
+                    </div>
+                </div>
+                <button id="export-data-btn">Exportar Dados (CSV)</button>
+                <button id="reset-stats-btn">Resetar Estatísticas</button>
+            </section>
+            <section id="users" class="panel">
+                <h2>Gerenciamento de Usuários</h2>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>Email</th>
+                            <th>Plano</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-table-body"></tbody>
+                </table>
+            </section>
+            <section id="links" class="panel">
+                <h2>Gerenciamento de Links</h2>
+                <select id="user-links-select">
+                    <option value="">Selecione um usuário</option>
+                </select>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Título</th>
+                            <th>URL</th>
+                            <th>Cliques</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="links-table-body"></tbody>
+                </table>
+                <button id="add-link-btn">Adicionar Link</button>
+            </section>
+            <section id="stats" class="panel">
+                <h2>Estatísticas</h2>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Usuário</th>
+                            <th>Visualizações</th>
+                            <th>Cliques Totais</th>
+                        </tr>
+                    </thead>
+                    <tbody id="stats-table-body"></tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <script src="firebase.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>
