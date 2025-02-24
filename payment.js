@@ -32,12 +32,44 @@ auth.onAuthStateChanged((user) => {
 
     const backendUrl = 'https://linkly-02es.onrender.com';
 
+    async function fetchWithRetry(url, options, retries = 3, delay = 2000) {
+        for (let i = 0; i < retries; i++) {
+            try {
+                const response = await fetch(url, options);
+                console.log('Status da resposta do backend:', response.status);
+                const responseText = await response.text();
+                console.log('Resposta bruta do backend:', responseText);
+
+                if (!response.ok) {
+                    throw new Error(`Erro do backend (${response.status}): ${responseText || 'Sem mensagem'}`);
+                }
+
+                let data;
+                try {
+                    data = JSON.parse(responseText);
+                } catch (jsonError) {
+                    throw new Error(`Resposta inválida: Dados não estão em formato JSON - "${responseText}"`);
+                }
+
+                console.log('Dados parseados do backend:', data);
+                return { response, data };
+            } catch (error) {
+                console.error(`Tentativa ${i + 1} falhou:`, error);
+                if (i < retries - 1) {
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    continue;
+                }
+                throw error;
+            }
+        }
+    }
+
     pixBtn.addEventListener('click', async () => {
         pixQrCode.style.display = 'block';
         pixBtn.style.display = 'none';
 
         try {
-            const response = await fetch(`${backendUrl}/create-pix-payment`, {
+            const { response, data } = await fetchWithRetry(`${backendUrl}/create-pix-payment`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -46,23 +78,6 @@ auth.onAuthStateChanged((user) => {
                     payer_email: user.email
                 })
             });
-
-            console.log('Status da resposta do backend:', response.status);
-            const responseText = await response.text();
-            console.log('Resposta bruta do backend:', responseText);
-
-            if (!response.ok) {
-                throw new Error(`Erro do backend (${response.status}): ${responseText || 'Sem mensagem'}`);
-            }
-
-            let data;
-            try {
-                data = JSON.parse(responseText);
-            } catch (jsonError) {
-                throw new Error(`Resposta inválida do backend: Dados não estão em formato JSON - Resposta: "${responseText}"`);
-            }
-
-            console.log('Dados parseados do backend:', data);
 
             if (data.point_of_interaction) {
                 const qrCodeBase64 = data.point_of_interaction.transaction_data.qr_code_base64;
@@ -94,16 +109,11 @@ auth.onAuthStateChanged((user) => {
                 paymentStatus.textContent = 'Aguardando pagamento...';
                 pollingInterval = setInterval(async () => {
                     try {
-                        const statusResponse = await fetch(`${backendUrl}/check-pix-status/${paymentId}`, {
+                        const { response: statusResponse, data: statusData } = await fetchWithRetry(`${backendUrl}/check-pix-status/${paymentId}`, {
                             method: 'GET',
                             headers: { 'Content-Type': 'application/json' }
                         });
-                        if (!statusResponse.ok) {
-                            const errorText = await statusResponse.text();
-                            throw new Error(`Erro ao verificar status (${statusResponse.status}): ${errorText || 'Sem mensagem'}`);
-                        }
 
-                        const statusData = await statusResponse.json();
                         console.log('Status do pagamento:', statusData.status);
 
                         if (statusData.status === 'approved') {
