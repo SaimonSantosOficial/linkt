@@ -30,76 +30,82 @@ auth.onAuthStateChanged((user) => {
     let timerInterval = null;
     let pollingInterval = null;
 
-    // Pagamento com Pix
+    // Substitua pela URL do seu backend hospedado (exemplo com Render)
+    const backendUrl = 'https://linkly-backend.onrender.com'; // Atualize com sua URL real
+
     pixBtn.addEventListener('click', async () => {
         pixQrCode.style.display = 'block';
         pixBtn.style.display = 'none';
 
-        const response = await fetch('http://localhost:3000/create-pix-payment', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                amount: parseFloat(price),
-                description: `Plano ${plan} - Link.ly`,
-                payer_email: user.email
-            })
-        });
+        try {
+            const response = await fetch(`${backendUrl}/create-pix-payment`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    amount: parseFloat(price),
+                    description: `Plano ${plan} - Link.ly`,
+                    payer_email: user.email
+                })
+            });
 
-        console.log('Status da resposta do backend:', response.status);
-        const data = await response.json();
-        console.log('Dados retornados do backend:', data);
+            console.log('Status da resposta do backend:', response.status);
+            const data = await response.json();
+            console.log('Dados retornados do backend:', data);
 
-        if (response.ok && data.point_of_interaction) {
-            const qrCodeBase64 = data.point_of_interaction.transaction_data.qr_code_base64;
-            const pixCode = data.point_of_interaction.transaction_data.qr_code;
-            const expirationDate = new Date(data.date_of_expiration);
-            paymentId = data.id;
+            if (response.ok && data.point_of_interaction) {
+                const qrCodeBase64 = data.point_of_interaction.transaction_data.qr_code_base64;
+                const pixCode = data.point_of_interaction.transaction_data.qr_code;
+                const expirationDate = new Date(data.date_of_expiration);
+                paymentId = data.id;
 
-            document.getElementById('qrCodeImage').src = `data:image/png;base64,${qrCodeBase64}`;
-            pixCodeInput.value = pixCode;
+                document.getElementById('qrCodeImage').src = `data:image/png;base64,${qrCodeBase64}`;
+                pixCodeInput.value = pixCode;
 
-            const updateTimer = () => {
-                const now = new Date();
-                const timeLeft = expirationDate - now;
-                if (timeLeft <= 0) {
-                    pixTimer.textContent = 'Expirado';
-                    clearInterval(timerInterval);
-                    clearInterval(pollingInterval);
-                    paymentStatus.textContent = 'Tempo expirado. Gere um novo Pix.';
-                } else {
-                    const hours = Math.floor(timeLeft / 3600000);
-                    const minutes = Math.floor((timeLeft % 3600000) / 60000);
-                    const seconds = Math.floor((timeLeft % 60000) / 1000);
-                    pixTimer.textContent = `${hours}h ${minutes}m ${seconds}s`;
-                }
-            };
-            updateTimer();
-            timerInterval = setInterval(updateTimer, 1000);
+                const updateTimer = () => {
+                    const now = new Date();
+                    const timeLeft = expirationDate - now;
+                    if (timeLeft <= 0) {
+                        pixTimer.textContent = 'Expirado';
+                        clearInterval(timerInterval);
+                        clearInterval(pollingInterval);
+                        paymentStatus.textContent = 'Tempo expirado. Gere um novo Pix.';
+                    } else {
+                        const hours = Math.floor(timeLeft / 3600000);
+                        const minutes = Math.floor((timeLeft % 3600000) / 60000);
+                        const seconds = Math.floor((timeLeft % 60000) / 1000);
+                        pixTimer.textContent = `${hours}h ${minutes}m ${seconds}s`;
+                    }
+                };
+                updateTimer();
+                timerInterval = setInterval(updateTimer, 1000);
 
-            // Iniciar polling para verificar o status do pagamento
-            paymentStatus.textContent = 'Aguardando pagamento...';
-            pollingInterval = setInterval(async () => {
-                const statusResponse = await fetch(`http://localhost:3000/check-pix-status/${paymentId}`, {
-                    method: 'GET',
-                    headers: { 'Content-Type': 'application/json' }
-                });
-                const statusData = await statusResponse.json();
+                paymentStatus.textContent = 'Aguardando pagamento...';
+                pollingInterval = setInterval(async () => {
+                    const statusResponse = await fetch(`${backendUrl}/check-pix-status/${paymentId}`, {
+                        method: 'GET',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                    const statusData = await statusResponse.json();
 
-                console.log('Status do pagamento:', statusData.status);
+                    console.log('Status do pagamento:', statusData.status);
 
-                if (statusResponse.ok && statusData.status === 'approved') {
-                    clearInterval(pollingInterval);
-                    clearInterval(timerInterval);
-                    paymentStatus.textContent = 'Pagamento confirmado!';
-                    window.updatePlanAfterPayment(plan);
-                } else if (statusData.status === 'rejected') {
-                    clearInterval(pollingInterval);
-                    clearInterval(timerInterval);
-                    paymentStatus.textContent = 'Pagamento rejeitado.';
-                }
-            }, 5000); // Verifica a cada 5 segundos
-        } else {
-            errorElement.textContent = data.error || 'Erro ao gerar QR Code Pix.';
+                    if (statusResponse.ok && statusData.status === 'approved') {
+                        clearInterval(pollingInterval);
+                        clearInterval(timerInterval);
+                        paymentStatus.textContent = 'Pagamento confirmado!';
+                        window.updatePlanAfterPayment(plan);
+                    } else if (statusData.status === 'rejected') {
+                        clearInterval(pollingInterval);
+                        clearInterval(timerInterval);
+                        paymentStatus.textContent = 'Pagamento rejeitado.';
+                    }
+                }, 5000);
+            } else {
+                errorElement.textContent = data.error || 'Erro ao gerar QR Code Pix.';
+            }
+        } catch (error) {
+            console.error('Erro ao conectar-se ao backend:', error);
+            errorElement.textContent = 'Erro ao conectar com o servidor. Tente novamente.';
         }
     });
 
