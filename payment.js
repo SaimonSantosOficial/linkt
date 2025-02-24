@@ -30,8 +30,7 @@ auth.onAuthStateChanged((user) => {
     let timerInterval = null;
     let pollingInterval = null;
 
-    // Substitua pela URL do seu backend hospedado (exemplo com Render)
-    const backendUrl = 'https://linkly-02es.onrender.com'; // Atualize com sua URL real
+    const backendUrl = 'https://linkly-02es.onrender.com'; // URL fornecida do Render
 
     pixBtn.addEventListener('click', async () => {
         pixQrCode.style.display = 'block';
@@ -49,10 +48,22 @@ auth.onAuthStateChanged((user) => {
             });
 
             console.log('Status da resposta do backend:', response.status);
-            const data = await response.json();
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Erro do backend (${response.status}): ${errorText || 'Sem mensagem'}`);
+            }
+
+            let data;
+            try {
+                data = await response.json();
+            } catch (jsonError) {
+                throw new Error('Resposta inválida do backend: Dados não estão em formato JSON');
+            }
+
             console.log('Dados retornados do backend:', data);
 
-            if (response.ok && data.point_of_interaction) {
+            if (data.point_of_interaction) {
                 const qrCodeBase64 = data.point_of_interaction.transaction_data.qr_code_base64;
                 const pixCode = data.point_of_interaction.transaction_data.qr_code;
                 const expirationDate = new Date(data.date_of_expiration);
@@ -81,23 +92,33 @@ auth.onAuthStateChanged((user) => {
 
                 paymentStatus.textContent = 'Aguardando pagamento...';
                 pollingInterval = setInterval(async () => {
-                    const statusResponse = await fetch(`${backendUrl}/check-pix-status/${paymentId}`, {
-                        method: 'GET',
-                        headers: { 'Content-Type': 'application/json' }
-                    });
-                    const statusData = await statusResponse.json();
+                    try {
+                        const statusResponse = await fetch(`${backendUrl}/check-pix-status/${paymentId}`, {
+                            method: 'GET',
+                            headers: { 'Content-Type': 'application/json' }
+                        });
+                        if (!statusResponse.ok) {
+                            const errorText = await statusResponse.text();
+                            throw new Error(`Erro ao verificar status (${statusResponse.status}): ${errorText || 'Sem mensagem'}`);
+                        }
 
-                    console.log('Status do pagamento:', statusData.status);
+                        const statusData = await statusResponse.json();
+                        console.log('Status do pagamento:', statusData.status);
 
-                    if (statusResponse.ok && statusData.status === 'approved') {
+                        if (statusData.status === 'approved') {
+                            clearInterval(pollingInterval);
+                            clearInterval(timerInterval);
+                            paymentStatus.textContent = 'Pagamento confirmado!';
+                            window.updatePlanAfterPayment(plan);
+                        } else if (statusData.status === 'rejected') {
+                            clearInterval(pollingInterval);
+                            clearInterval(timerInterval);
+                            paymentStatus.textContent = 'Pagamento rejeitado.';
+                        }
+                    } catch (error) {
+                        console.error('Erro ao verificar status:', error);
+                        paymentStatus.textContent = 'Erro ao verificar pagamento. Tente novamente.';
                         clearInterval(pollingInterval);
-                        clearInterval(timerInterval);
-                        paymentStatus.textContent = 'Pagamento confirmado!';
-                        window.updatePlanAfterPayment(plan);
-                    } else if (statusData.status === 'rejected') {
-                        clearInterval(pollingInterval);
-                        clearInterval(timerInterval);
-                        paymentStatus.textContent = 'Pagamento rejeitado.';
                     }
                 }, 5000);
             } else {
@@ -105,7 +126,7 @@ auth.onAuthStateChanged((user) => {
             }
         } catch (error) {
             console.error('Erro ao conectar-se ao backend:', error);
-            errorElement.textContent = 'Erro ao conectar com o servidor. Tente novamente.';
+            errorElement.textContent = `Erro ao conectar com o servidor: ${error.message}`;
         }
     });
 
