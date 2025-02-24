@@ -30,7 +30,7 @@ auth.onAuthStateChanged((user) => {
     let timerInterval = null;
     let pollingInterval = null;
 
-    const backendUrl = 'https://linkly-02es.onrender.com'; // URL do Render fornecida
+    const backendUrl = 'https://linkly-02es.onrender.com';
 
     pixBtn.addEventListener('click', async () => {
         pixQrCode.style.display = 'block';
@@ -48,7 +48,7 @@ auth.onAuthStateChanged((user) => {
             });
 
             console.log('Status da resposta do backend:', response.status);
-            const responseText = await response.text(); // Captura o texto bruto
+            const responseText = await response.text();
             console.log('Resposta bruta do backend:', responseText);
 
             if (!response.ok) {
@@ -57,9 +57,9 @@ auth.onAuthStateChanged((user) => {
 
             let data;
             try {
-                data = JSON.parse(responseText); // Tenta parsear manualmente
+                data = JSON.parse(responseText);
             } catch (jsonError) {
-                throw new Error(`Resposta inválida do backend: Dados não estão em formato JSON - ${responseText}`);
+                throw new Error(`Resposta inválida do backend: Dados não estão em formato JSON - Resposta: "${responseText}"`);
             }
 
             console.log('Dados parseados do backend:', data);

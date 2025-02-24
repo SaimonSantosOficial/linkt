@@ -2,7 +2,6 @@ const express = require('express');
 const fetch = require('node-fetch').default;
 const cors = require('cors');
 const app = express();
-const port = 3000;
 
 app.use(express.json());
 app.use(cors());
@@ -13,6 +12,11 @@ app.post('/create-pix-payment', async (req, res) => {
     const { amount, description, payer_email } = req.body;
 
     console.log('Requisição de pagamento Pix recebida:', req.body);
+
+    if (!amount || !description || !payer_email) {
+        console.error('Dados incompletos na requisição:', req.body);
+        return res.status(400).json({ error: 'Dados incompletos: amount, description e payer_email são obrigatórios' });
+    }
 
     const expirationDate = new Date();
     expirationDate.setMinutes(expirationDate.getMinutes() + 15);
@@ -35,18 +39,27 @@ app.post('/create-pix-payment', async (req, res) => {
         });
 
         console.log('Status da resposta do Mercado Pago:', response.status);
-        const data = await response.json();
+        const responseText = await response.text();
+        console.log('Resposta bruta do Mercado Pago:', responseText);
+
+        let data;
+        try {
+            data = JSON.parse(responseText);
+        } catch (jsonError) {
+            console.error('Erro ao parsear resposta do Mercado Pago:', jsonError);
+            return res.status(500).json({ error: 'Resposta inválida do Mercado Pago', details: responseText });
+        }
 
         if (response.ok) {
             console.log('Pagamento Pix criado com sucesso:', data);
-            res.json(data);
+            res.status(200).json(data);
         } else {
             console.error('Erro retornado pelo Mercado Pago:', data);
-            res.status(response.status).json({ error: data.message || 'Erro ao gerar Pix' });
+            res.status(response.status).json({ error: data.message || 'Erro ao gerar Pix', details: data });
         }
     } catch (error) {
         console.error('Erro ao criar pagamento Pix:', error.message);
-        res.status(500).json({ error: 'Erro ao gerar Pix: ' + error.message });
+        res.status(500).json({ error: 'Erro interno ao gerar Pix', details: error.message });
     }
 });
 
@@ -66,7 +79,7 @@ app.get('/check-pix-status/:paymentId', async (req, res) => {
         const data = await response.json();
 
         if (response.ok) {
-            res.json({ status: data.status });
+            res.status(200).json({ status: data.status });
         } else {
             console.error('Erro ao verificar status:', data);
             res.status(response.status).json({ error: data.message || 'Erro ao verificar status' });
@@ -77,6 +90,7 @@ app.get('/check-pix-status/:paymentId', async (req, res) => {
     }
 });
 
+const port = process.env.PORT || 3000;
 app.listen(port, () => {
-    console.log(`Servidor rodando em http://localhost:${port}`);
+    console.log(`Servidor rodando na porta ${port}`);
 });
