@@ -31,7 +31,7 @@ auth.onAuthStateChanged((user) => {
     let pollingInterval = null;
 
     // Substitua pela URL do seu backend hospedado (exemplo com Render)
-    const backendUrl = 'https://linkly-backend.onrender.com'; // Atualize com sua URL real
+    const backendUrl = 'https://linkly-02es.onrender.com'; // Atualize com sua URL real
 
     pixBtn.addEventListener('click', async () => {
         pixQrCode.style.display = 'block';
