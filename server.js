@@ -52,14 +52,14 @@ app.post('/create-pix-payment', async (req, res) => {
 
         if (response.ok) {
             console.log('Pagamento Pix criado com sucesso:', data);
-            res.status(200).json(data);
+            return res.status(200).json(data);
         } else {
             console.error('Erro retornado pelo Mercado Pago:', data);
-            res.status(response.status).json({ error: data.message || 'Erro ao gerar Pix', details: data });
+            return res.status(response.status).json({ error: data.message || 'Erro ao gerar Pix', details: data });
         }
     } catch (error) {
         console.error('Erro ao criar pagamento Pix:', error.message);
-        res.status(500).json({ error: 'Erro interno ao gerar Pix', details: error.message });
+        return res.status(500).json({ error: 'Erro interno ao gerar Pix', details: error.message });
     }
 });
 
@@ -76,17 +76,26 @@ app.get('/check-pix-status/:paymentId', async (req, res) => {
         });
 
         console.log('Status da verificação do pagamento:', response.status);
-        const data = await response.json();
+        const data = await response.text(); // Usa text() para capturar resposta bruta
+        console.log('Resposta bruta do Mercado Pago (status):', data);
+
+        let parsedData;
+        try {
+            parsedData = JSON.parse(data);
+        } catch (jsonError) {
+            console.error('Erro ao parsear resposta do Mercado Pago (status):', jsonError);
+            return res.status(500).json({ error: 'Resposta inválida ao verificar status', details: data });
+        }
 
         if (response.ok) {
-            res.status(200).json({ status: data.status });
+            return res.status(200).json({ status: parsedData.status });
         } else {
-            console.error('Erro ao verificar status:', data);
-            res.status(response.status).json({ error: data.message || 'Erro ao verificar status' });
+            console.error('Erro ao verificar status:', parsedData);
+            return res.status(response.status).json({ error: parsedData.message || 'Erro ao verificar status', details: parsedData });
         }
     } catch (error) {
         console.error('Erro ao verificar status do pagamento:', error.message);
-        res.status(500).json({ error: 'Erro ao verificar status: ' + error.message });
+        return res.status(500).json({ error: 'Erro ao verificar status: ' + error.message });
     }
 });
 
